@@ -1,0 +1,142 @@
+
+<div id="popup1" class="overlay">
+                	<div class="popup">
+                		<h2>Request a Quote</h2>
+                		<a class="close" href="#">×</a>
+                		<div class="content">
+                			<form name="form" method="POST" id="quote">
+                			    <label>Name *</label>
+                			    <input type="text" value="" name="name" required="">
+                			    <label>Email *</label>
+                			    <input type="mail" value="" name="email" required="">
+                			    <label>Phone Number *</label>
+                			    <input type="tel" value="" name="phone" required="">
+                			    <label>Select Service</label>
+                			    <select name="service">
+                			        <option>MOBILE APP DEVELOPMENT</option>
+                			        <option>MOBILE GAMES DEVELOPMENT</option>
+                			        <option>CROSS PLATFORM APP DEVELOPMENT</option>
+                			        <option>MOBILE CLOUD SOLUTION</option>
+                			        <option>WEB APPLICATION DEVELOPMENT</option>
+                			        <option>WEB DESIGN AND DEVELOPMENT</option>
+                			        <option>OPEN SOURCE SOLUTION</option>
+                			        <option>ENTERPRISE MOBILE APPS DEVELOPMENT</option>
+                			        <option>ECOMMERCE SOLUTION</option>
+                			        <option>LOCATION BASED APPS(GPS)</option>
+                			    </select>
+                			    <label>Message</label>
+                			    <textarea row="2" required="" name="message"></textarea>
+                          <input type="submit" value="Submit" name="message">
+                			</form>
+                			<div class="succes-msg">
+                			    <p>Your message sent successfully!!!!</p>
+                			</div>
+                		</div>
+                	</div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+        $("#quote").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    var form = $(this);
+    var url = form.attr('action');
+    
+    $.ajax({
+           type: "POST",
+           url: "https://dev.xmedia.in/orgware/script.php",
+           data: form.serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+              $('#quote').addClass('hide-form');
+               $('#quote').trigger("reset");
+              $('.succes-msg').addClass('show-msg');
+           }
+         });
+
+    
+});
+    </script>
+
+
+
+
+<?php 
+
+
+require 'PHPMailer_master/src/Exception.php';
+require 'PHPMailer_master/src/PHPMailer.php';
+require 'PHPMailer_master/src/SMTP.php';
+$name = $_POST['name'];
+$email = $_POST['email'];
+$number = $_POST['phone'];
+$service = $_POST['service'];
+$message = $_POST['message'];
+
+$mail = new PHPMailer\PHPMailer\PHPMailer();
+ $mail->isSMTP();                            // Set mailer to use SMTP
+    $mail->Host      = 'smtp.gmail.com';        // Specify main and backup SMTP servers
+    $mail->SMTPAuth  = true;                    // Enable SMTP authentication
+    $mail->CharSet   = "UTF-8";
+   // $mail->SMTPDebug = 1;                       // Enable verbose debug output
+    $mail->isHTML(true);                        // Set email format to HTML
+    // $mail->name = $_POST['name'];                       
+    $mail->Mail = $_POST['mail'];                       
+    $mail->number =  $_POST['number'];                       
+    $mail->service =  $_POST['service'];                      
+    $mail->message =  $_POST['message'];
+    
+    
+    $mail->Username = 'murugadheebam@xmediasolution.com';                    // SMTP username
+    $mail->Password ='Deepa@123';                     // SMTP password
+    
+    //$mail->SMTPAutoTLS    = false;
+    $mail->SMTPSecure   = 'tls';                // Enable TLS encryption, `ssl` also accepted
+    $mail->Port         = 587;                  // TCP port to connect to
+
+    $mail->setFrom('murugadheebam@xmediasolution.com','orgware');            // Mail Form
+    $mail->addAddress('keerthi@xmediasolution.com');          // Name is optional this is the To address
+
+    $mail->Subject = "subject";
+    $mail->Body    = '<html>
+<head>
+  <title>Request a Quote</title>
+</head>
+<body>
+   <table class="">
+    <tr>
+      <th>Name</th><th>Email</th><th>Phone Number</th><th>Service</th><th>Message</th>
+    </tr>
+    <tr>
+      <td>'. $name .'</td><td>'. $email .'</td><td>'. $number .'</td><td>'. $service .'</td><td>'. $message .'</td>
+    </tr>
+  </table>
+</body>
+</html>';
+    
+   if(!$mail->Send()) {
+        $error = 'Mail error: '.$mail->ErrorInfo;
+        return false;
+    } else {
+        $error = 'Message sent!';
+        return true;
+    }
+
+?>
